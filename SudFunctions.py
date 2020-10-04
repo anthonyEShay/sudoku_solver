@@ -39,7 +39,7 @@ def updateExacts(gBoard):
                 if value in gBoard.elements[y].potentials:
                     gBoard.elements[y].potentials.remove(value)
         if len(gBoard.elements[x].potentials) <= 0:
-            print("Error: ", x)
+            print("Potentials Length Error: ", x)
             print(gBoard.elements[x])
             exit -1
 
@@ -221,14 +221,14 @@ def mutateWave(population, gBoard):
         a = random.randint(0, len(population) - 1)
         createMutation(population[a])
         updateErrors(gBoard, population[a].elements)
-        population[a].calcFinalError()
+        population[a].fitness = population[a].calcTotalError()
 
 def shakeUpConverge(pop, fitn, number, gBoard):
     percen = number/len(pop)*100
     if percen > 80:
-        toChange = int(number * .5)
+        toChange = int(number * .35)
     else:
-        toChange = int(number * .25)
+        toChange = int(number * .2)
     for x in range(len(pop)):
         if toChange == 0:
             break

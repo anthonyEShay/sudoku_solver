@@ -23,12 +23,20 @@ class Board:
         self.prCalcs = preCal
         self.elements = []
         self.size = size
-        count = 0
-        for x in range(size**2 * size**2):
-            y = Box(size) if inputList[count] == "-" else Box(size, int(inputList[count]))
-            self.elements.append(y)
-            count += 1
-            
+        if inputList != None:
+            for x in range(size**2 * size**2):
+                y = Box(size) if inputList[x] == "-" else Box(size, int(inputList[x]))
+                self.elements.append(y)
+
+    def getCopy(self):
+        newBoard = Board(self.size, None, self.prCalcs)
+        for x in range(self.size**2 * self.size**2):
+            tempBox = Box(self.size, 1)
+            tempBox.currentValue = self.elements[x].currentValue
+            tempBox.errors = self.elements[x].errors
+            tempBox.potentials = self.elements[x].potentials[:]
+            newBoard.elements.append(tempBox)
+        return newBoard
     def getRow(self, elementNum):
         for row in self.prCalcs.rows:
             if elementNum in row:
@@ -50,6 +58,7 @@ class Board:
                 temp.remove(elementNum)
                 return temp
         print("Error! No squ found for element", elementNum)
+        
     def calcTotalError(self):
         count = 0
         for x in self.elements:
@@ -68,7 +77,7 @@ class Board:
     def printNice(self):
         for row in self.prCalcs.rows:
             for x in row:
-                print(format(self.elements[x].currentValue, "<3"), end = "")
+                print(format(str(self.elements[x].currentValue), "<3"), end = "")
             print("")
     def returnString(self):
         rString = ""
@@ -133,6 +142,15 @@ class partBoard:
     def __init__(self, elements):
         self.elements = elements
         self.fitness = self.calcBoxError()
+    def getCopy(self):
+        temp = []
+        for ele in self.elements:
+            newBox = Box(0, ele.currentValue, ele.errors)
+            if newBox.errors != 0:
+                newBox.currentValue = 0
+                newBox.potentials = ele.potentials[:]
+            temp.append(newBox)
+        return temp
     def calcFinalError(self):
         self.fitness = self.calcBoxError()
     def calcTotalError(self):
@@ -145,6 +163,13 @@ class partBoard:
         for x in self.elements:
             count += 0 if x.errors == 0 else 1
         return count
+    def calcSpecial(self, gBoard):
+        count = 0
+        for row in gBoard.prCalcs.rows:
+            for x in row:
+                if self.elements[x].errors != 0:
+                    count += 1
+        return [len(self.elements), count, self.fitness]
     def checkTerminal(self):
         for x in self.elements:
             if x.errors != 0:
@@ -159,7 +184,7 @@ class partBoard:
         for row in gBoard.prCalcs.rows:
             for x in row:
                 if self.elements[x].errors != 0:
-                    print(format("-", "<3"), end = "")
+                    print(format(">-" + str(self.elements[x].currentValue) + "-" + str(self.elements[x].errors) + "-" + str(len(self.elements[x].potentials)), "<9"), end = "")
                 else:
-                    print(format(self.elements[x].currentValue, "<3"), end = "")
+                    print(format(str(self.elements[x].currentValue) + "-" + str(self.elements[x].errors) + "-" + str(len(self.elements[x].potentials)), "<9"), end = "")
             print("")

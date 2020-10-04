@@ -40,13 +40,13 @@ def fillBlank(Text1):
     sys.stdout.flush()
 
 def runSudoku(Text1, maxCount):
-    print('guiTest_support.runSudoku')
+    #print('guiTest_support.runSudoku')
     boxInput = Text1.get("1.0", 'end-1c')
-    print("Input:\n", boxInput, sep = "")
+    #print("Input:\n", boxInput, sep = "")
     boxInput = boxInput.strip()
     boxInput = boxInput.replace("\n", " ")
     nArray = boxInput.split(" ")
-    print(len(nArray))
+    #print(len(nArray))
     #print("array:", nArray)
     startTime = time.process_time()
     returnValue = Main.main(SudSize.get(), SudType.get(), nArray, maxCount)
